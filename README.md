@@ -104,6 +104,11 @@ ex: ['1024x768', '1920x1080']
 ```
 You could add any resolution you want, just follow the same format.
 
+#### options.ignoressl
+Type: Boolean
+
+An option for ignore SSL error on expired or self-signed certificate.
+
 ### emitter.setMaxListeners
 
 Upgrade all dependencies when it upgrade to 0.2.0. When [node-phantom-simple](https://github.com/baudehlo/node-phantom-simple) upgrade to latest(1.0.16), it will have [setMaxListeners](http://nodejs.org/api/events.html#events_emitter_setmaxlisteners_n) issue cause it listen [uncaughtException](https://github.com/baudehlo/node-phantom-simple/blob/master/node-phantom-simple.js#L84). When user take a lot of screenshot it will over the limit.

@@ -31,17 +31,24 @@ module.exports = function(grunt) {
           {src: "index.html", dest: "screenshot.jpg"}
         ]
       },
-      viewport: ['1920x1080']
+      viewport: ['1920x1080'],
+      ignoressl: false
     });
 
     // Core screenshot function using phamtonJS
     var screenshot = function(opts, cb) {
-      var viewport = opts.viewport;
-      var type = opts.type;
-      var path = opts.path;
-      var src = opts.src;
-      var dest = opts.dest;
-      var delay = opts.delay;
+      var viewport       = opts.viewport;
+      var type           = opts.type;
+      var path           = opts.path;
+      var src            = opts.src;
+      var dest           = opts.dest;
+      var delay          = opts.delay;
+      var ignoreSSL      = opts.ignoressl || false;
+      var phantomOptions = {
+        phantomPath: require('phantomjs').path,
+        parameters: {'ignore-ssl-errors': ignoreSSL?'yes':'no'}
+      };
+
 
       phantom.create(function(err, ph) {
         if (err) {
@@ -88,9 +95,7 @@ module.exports = function(grunt) {
             }
           });
         });
-      }, {
-        phantomPath: require('phantomjs').path
-      });
+      }, phantomOptions);
     };
 
     // At least local or remote url should be assigned
@@ -109,7 +114,8 @@ module.exports = function(grunt) {
             viewport: view,
             src: file.src,
             dest: file.dest,
-            delay: file.delay
+            delay: file.delay,
+            ignoressl: option.ignoressl || false
           }, function() {
             cb();
           });
@@ -133,7 +139,7 @@ module.exports = function(grunt) {
             screenshot({
               path: options.path,
               type: 'local',
-              viewport: view, 
+              viewport: view,
               src: 'http://localhost:' + options.local.port + '/' + file.src,
               dest: file.dest,
               delay: file.delay
@@ -150,7 +156,7 @@ module.exports = function(grunt) {
       });
     }
 
-    // Listen event to decide when can stop the task 
+    // Listen event to decide when can stop the task
     grunt.event.on('finish', function(eventType) {
       if (eventType === 'remote') {
         hasRemote = false;
